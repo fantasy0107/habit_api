@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\TargetController;
+use App\Http\Controllers\Api\UserTokenController;
+use App\Http\Controllers\Api\TopicController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,3 +30,18 @@ Route::get('test', function () {
 
 Route::post('login',  [LoginController::class, 'logIn']);
 Route::post('register',  [LoginController::class, 'register']);
+
+Route::post('user_tokens',  [UserTokenController::class, 'store']);
+
+Route::middleware('check.token')->group(function () {
+    Route::prefix('targets')->group(function () {
+        Route::get('/', [TargetController::class, 'index']);
+        Route::post('/', [TargetController::class, 'store']);
+        Route::patch('{target}', [TargetController::class, 'update']);
+    });
+
+    Route::prefix('topics')->group(function () {
+        Route::get('/', [TopicController::class, 'index']);
+        Route::post('/', [TopicController::class, 'store']);
+    });
+});

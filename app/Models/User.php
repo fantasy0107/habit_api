@@ -6,6 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Target;
+use App\Models\UserToken;
+use App\Models\Topic;
 
 class User extends Authenticatable
 {
@@ -40,4 +43,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function targets()
+    {
+        return $this->hasMany(Target::class, 'user_id', 'id');
+    }
+
+    public function user_token()
+    {
+        return $this->hasOne(UserToken::class, 'user_id', 'id');
+    }
+
+    public function topics()
+    {
+        return $this->hasMany(Topic::class, 'user_id', 'id');
+    }
 }

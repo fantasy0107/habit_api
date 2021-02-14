@@ -13,13 +13,13 @@ class LoginController extends Controller
 
     public function logIn(Request $request)
     {
-       
+      
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 return $this->ok([
-                    'user' => $user
+                    'user' => $user->load('user_token')
                 ]);
             }
         }
