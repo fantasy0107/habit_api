@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TopicCollection;
+use App\Http\Resources\TopicResource;
 use App\Models\TargetTag;
 use App\Models\Topic;
 use Illuminate\Http\Request;
@@ -28,32 +30,27 @@ class TopicController extends Controller
         ];
 
         if ($request->target_id) {
-            $tags = TargetTag::where([
-                'user_id' => $user->id,
-                'target_id' => $request->target_id
-            ])->get();
-
+            $tags = $user->targetTags()->where('target_id',  $request->target_id)->get();
             $response['tag_id'] = $tags->pluck('id');
             $response['db']['target_tag'] = $tags->keyBy('id');
         }
 
-        if ($topics->count()) {
-            $response['db']['topic'] =  $topics->map(function ($topic) use ($tags) {
-                $tagIDs = [];
-                if ($tags->count()) {
-                    foreach ($tags as $key => $tag) {
-                        if (str_contains($topic->content, "#$tag->name")) {
-                            $tagIDs[] = $tag->id;
-                        }
-                    }
+
+        $response['db']['topic'] =  $topics->map(function ($topic) use ($tags) {
+            $tagIDs = [];
+
+            $tags->each(function ($tag) use ($topic, &$tagIDs) {
+                if (str_contains($topic->content, "#$tag->name")) {
+                    $tagIDs[] = $tag->id;
                 }
+            });
+
+            $topic->tag_id = $tagIDs;
+
+            return $topic;
+        })->keyBy('id');
 
 
-                $topic->tag_id = $tagIDs;
-
-                return $topic;
-            })->keyBy('id');
-        };
 
         return $this->ok($response);
     }
@@ -77,14 +74,7 @@ class TopicController extends Controller
         $topic->content = $request->input('content', '預設');
         $topic->save();
 
-        return $this->created([
-            'topic' =>  $topic,
-            'db' => [
-                'topic' => [
-                    $topic->id => $topic
-                ]
-            ]
-        ]);
+        return new TopicResource($topic);
     }
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Target;
 use App\Models\UserToken;
 use App\Models\Topic;
+use App\Models\TargetTag;
 
 class User extends Authenticatable
 {
@@ -57,5 +58,10 @@ class User extends Authenticatable
     public function topics()
     {
         return $this->hasMany(Topic::class, 'user_id', 'id');
+    }
+
+    public function targetTags()
+    {
+        return $this->hasMany(TargetTag::class, 'user_id', 'id');
     }
 }
