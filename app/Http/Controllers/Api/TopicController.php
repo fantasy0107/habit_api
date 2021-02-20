@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\TargetTag;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,19 +15,44 @@ class TopicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         $topics = $user->topics;
-       
+
+        $tags = collect();
 
         $response = [
             'topic_id' => $topics->pluck('id')
         ];
 
+        if ($request->target_id) {
+            $tags = TargetTag::where([
+                'user_id' => $user->id,
+                'target_id' => $request->target_id
+            ])->get();
+
+            $response['tag_id'] = $tags->pluck('id');
+            $response['db']['target_tag'] = $tags->keyBy('id');
+        }
+
         if ($topics->count()) {
-            $response['db']['topic'] =  $topics->keyBy('id');
+            $response['db']['topic'] =  $topics->map(function ($topic) use ($tags) {
+                $tagIDs = [];
+                if ($tags->count()) {
+                    foreach ($tags as $key => $tag) {
+                        if (str_contains($topic->content, "#$tag->name")) {
+                            $tagIDs[] = $tag->id;
+                        }
+                    }
+                }
+
+
+                $topic->tag_id = $tagIDs;
+
+                return $topic;
+            })->keyBy('id');
         };
 
         return $this->ok($response);
@@ -81,7 +107,30 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $topic = Topic::find($id);
+
+        if (!$topic) {
+            abort(400, '找不到');
+        }
+
+        $update = false;
+        if ($request->content && $request->content !=  $topic->content) {
+            $topic->content = $request->content;
+            $update  = true;
+        }
+
+        if ($request->title && $request->title !=  $topic->title) {
+            $topic->title = $request->title;
+            $update  = true;
+        }
+
+        if ($update) {
+            $topic->save();
+        }
+
+        return $this->ok([
+            'topic' => $topic
+        ]);
     }
 
     /**

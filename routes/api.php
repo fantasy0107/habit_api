@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\TargetController;
+use App\Http\Controllers\Api\TargetTagController;
 use App\Http\Controllers\Api\UserTokenController;
 use App\Http\Controllers\Api\TopicController;
 
@@ -43,5 +44,11 @@ Route::middleware('check.token')->group(function () {
     Route::prefix('topics')->group(function () {
         Route::get('/', [TopicController::class, 'index']);
         Route::post('/', [TopicController::class, 'store']);
+        Route::patch('/{topic}', [TopicController::class, 'update']);
+    });
+
+    Route::prefix('target_tags')->group(function () {
+        Route::get('/', [TargetTagController::class, 'index']);
+        Route::post('/', [TargetTagController::class, 'store']);
     });
 });
