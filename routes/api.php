@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TargetTagController;
 use App\Http\Controllers\Api\UserTokenController;
 use App\Http\Controllers\Api\TopicController;
+use App\Http\Controllers\Api\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +25,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('test', function () {
-    return 123;
-});
+Route::get('test/{id}', [TestController::class, 'update']);
 
 
 Route::post('login',  [LoginController::class, 'logIn']);
 Route::post('register',  [LoginController::class, 'register']);
 
 Route::post('user_tokens',  [UserTokenController::class, 'store']);
+
+
+
 
 Route::middleware('check.token')->group(function () {
     Route::prefix('targets')->group(function () {
