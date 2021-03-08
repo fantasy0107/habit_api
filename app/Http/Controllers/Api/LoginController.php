@@ -84,6 +84,8 @@ class LoginController extends Controller
             $userToken->save();
         }
 
-        return $user;
+        return $this->ok([
+            'user' => $user->load('user_token')
+        ]);
     }
 }
