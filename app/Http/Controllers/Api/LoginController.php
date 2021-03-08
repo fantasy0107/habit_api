@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 
 
 class LoginController extends Controller
@@ -13,7 +14,7 @@ class LoginController extends Controller
 
     public function logIn(Request $request)
     {
-      
+
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
@@ -52,5 +53,16 @@ class LoginController extends Controller
         return $this->created([
             'user' => $user
         ]);
+    }
+
+    public function loginByFacebook(Request $request)
+    {
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+        $user = Socialite::driver('facebook')->userFromToken($request->token);
+
+        return $user;
     }
 }
