@@ -46,7 +46,13 @@ class TargetTagController extends Controller
         $targetTag->save();
 
         return $this->created([
-            'target_tag' => $targetTag
+            'id' => $targetTag->id,
+            'target_tag' => $targetTag,
+            'db' => [
+                'target_tag' => [
+                    $targetTag->id => $targetTag
+                ]
+            ]
         ]);
     }
 
