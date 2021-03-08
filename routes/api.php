@@ -28,7 +28,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('test/{id}', [TestController::class, 'update']);
 
 
-Route::post('login',  [LoginController::class, 'logIn']);
+Route::prefix('login')->group(function () {
+    Route::post('/',  [LoginController::class, 'logIn']);
+    Route::post('facebook',  [LoginController::class, 'loginByFacebook']);
+});
+
 Route::post('register',  [LoginController::class, 'register']);
 
 Route::post('user_tokens',  [UserTokenController::class, 'store']);
