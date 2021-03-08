@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserToken;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-
+use Illuminate\Support\Facades\Crypt;
 
 class LoginController extends Controller
 {
@@ -61,7 +62,27 @@ class LoginController extends Controller
             'token' => 'required'
         ]);
 
-        $user = Socialite::driver('facebook')->userFromToken($request->token);
+        try {
+            $facebookUser = Socialite::driver('facebook')->userFromToken($request->token);
+        } catch (\Exception $e) {
+            abort(400, '發生錯誤');
+        }
+
+
+        $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
+        if (!$user) {
+            $user = new User;
+            $user->name = $facebookUser->name;
+            $user->email = $facebookUser->email;
+            $user->type = 1;
+            $user->password =  '';
+            $user->save();
+
+            $userToken  = new UserToken;
+            $userToken->user_id = $user->id;
+            $userToken->value = Crypt::encryptString($user->id);
+            $userToken->save();
+        }
 
         return $user;
     }
