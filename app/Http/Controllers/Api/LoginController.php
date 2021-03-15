@@ -100,6 +100,21 @@ class LoginController extends Controller
         } catch (\Exception $e) {
             abort(400, '發生錯誤');
         }
+        $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
+
+        if (!$user) {
+            $user = new User;
+            $user->name = $facebookUser->name;
+            $user->email = $facebookUser->email;
+            $user->type = 2;
+            $user->password =  '';
+            $user->save();
+
+            $userToken  = new UserToken;
+            $userToken->user_id = $user->id;
+            $userToken->value = Crypt::encryptString($user->id);
+            $userToken->save();
+        }
 
         return $this->ok(['user' => $facebookUser]);
 

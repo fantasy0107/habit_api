@@ -11,6 +11,9 @@ use App\Models\UserToken;
 use App\Models\Topic;
 use App\Models\TargetTag;
 
+/**
+ * type = 0 (email), 1 (facebook), 2(google)
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
