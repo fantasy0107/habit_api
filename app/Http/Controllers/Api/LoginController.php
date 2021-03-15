@@ -101,7 +101,7 @@ class LoginController extends Controller
             abort(400, '發生錯誤');
         }
 
-        return $facebookUser;
+        return $this->ok(['user' => $facebookUser]);
 
         // $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
         // if (!$user) {
