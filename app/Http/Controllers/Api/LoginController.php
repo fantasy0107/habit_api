@@ -116,7 +116,7 @@ class LoginController extends Controller
             $userToken->save();
         }
 
-        return $this->ok(['user' => $user]);
+        return $this->ok(['user' =>  $user->load('user_token')]);
 
         // $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
         // if (!$user) {
