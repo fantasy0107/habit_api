@@ -31,6 +31,7 @@ Route::get('test/{id}', [TestController::class, 'update']);
 Route::prefix('login')->group(function () {
     Route::post('/',  [LoginController::class, 'logIn']);
     Route::post('facebook',  [LoginController::class, 'loginByFacebook']);
+    Route::post('google',  [LoginController::class, 'loginByGoogle']);
 });
 
 Route::post('register',  [LoginController::class, 'register']);

@@ -88,4 +88,38 @@ class LoginController extends Controller
             'user' => $user->load('user_token')
         ]);
     }
+
+    public function loginByGoogle(Request $request)
+    {
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+        try {
+            $facebookUser = Socialite::driver('google')->userFromToken($request->token);
+        } catch (\Exception $e) {
+            abort(400, '發生錯誤');
+        }
+
+        return $facebookUser;
+
+        // $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
+        // if (!$user) {
+        //     $user = new User;
+        //     $user->name = $facebookUser->name;
+        //     $user->email = $facebookUser->email;
+        //     $user->type = 1;
+        //     $user->password =  '';
+        //     $user->save();
+
+        //     $userToken  = new UserToken;
+        //     $userToken->user_id = $user->id;
+        //     $userToken->value = Crypt::encryptString($user->id);
+        //     $userToken->save();
+        // }
+
+        // return $this->ok([
+        //     'user' => $user->load('user_token')
+        // ]);
+    }
 }
