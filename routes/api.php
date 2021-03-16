@@ -35,11 +35,7 @@ Route::prefix('login')->group(function () {
 });
 
 Route::post('register',  [LoginController::class, 'register']);
-
 Route::post('user_tokens',  [UserTokenController::class, 'store']);
-
-
-
 
 Route::middleware('check.token')->group(function () {
     Route::prefix('targets')->group(function () {

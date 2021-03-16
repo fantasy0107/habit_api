@@ -15,7 +15,6 @@ class LoginController extends Controller
 
     public function logIn(Request $request)
     {
-
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
@@ -48,7 +47,7 @@ class LoginController extends Controller
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password =  Hash::make($request->password);
+        $user->password = Hash::make($request->password);
         $user->save();
 
         return $this->created([
@@ -77,11 +76,6 @@ class LoginController extends Controller
             $user->type = 1;
             $user->password =  '';
             $user->save();
-
-            $userToken  = new UserToken;
-            $userToken->user_id = $user->id;
-            $userToken->value = Crypt::encryptString($user->id);
-            $userToken->save();
         }
 
         return $this->ok([
@@ -109,32 +103,10 @@ class LoginController extends Controller
             $user->type = 2;
             $user->password =  '';
             $user->save();
-
-            $userToken  = new UserToken;
-            $userToken->user_id = $user->id;
-            $userToken->value = Crypt::encryptString($user->id);
-            $userToken->save();
         }
 
-        return $this->ok(['user' =>  $user->load('user_token')]);
-
-        // $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
-        // if (!$user) {
-        //     $user = new User;
-        //     $user->name = $facebookUser->name;
-        //     $user->email = $facebookUser->email;
-        //     $user->type = 1;
-        //     $user->password =  '';
-        //     $user->save();
-
-        //     $userToken  = new UserToken;
-        //     $userToken->user_id = $user->id;
-        //     $userToken->value = Crypt::encryptString($user->id);
-        //     $userToken->save();
-        // }
-
-        // return $this->ok([
-        //     'user' => $user->load('user_token')
-        // ]);
+        return $this->ok([
+            'user' => $user->load('user_token')
+        ]);
     }
 }

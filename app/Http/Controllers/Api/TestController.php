@@ -51,21 +51,7 @@ class TestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
-
-        // try {
-            $topic = Topic::first();
-            // $topic = Topic::lockForUpdate()->first();
-            $topic->title =  $topic->title + 1;
-            $topic->save();
-        // } catch (\Exception $e) {
-        //     DB::rollback();
-        //     abort(400, '錯誤');
-        // }
-
-        // DB::commit();
-
-        return $this->ok($topic);
+        return $this->ok([]);
     }
 
     /**
