@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TargetTagController;
 use App\Http\Controllers\Api\UserTokenController;
 use App\Http\Controllers\Api\TopicController;
 use App\Http\Controllers\Api\TestController;
+use App\Http\Controllers\HabitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,20 +39,9 @@ Route::post('register',  [LoginController::class, 'register']);
 Route::post('user_tokens',  [UserTokenController::class, 'store']);
 
 Route::middleware('check.token')->group(function () {
-    Route::prefix('targets')->group(function () {
-        Route::get('/', [TargetController::class, 'index']);
-        Route::post('/', [TargetController::class, 'store']);
-        Route::patch('{target}', [TargetController::class, 'update']);
-    });
 
-    Route::prefix('topics')->group(function () {
-        Route::get('/', [TopicController::class, 'index']);
-        Route::post('/', [TopicController::class, 'store']);
-        Route::patch('/{topic}', [TopicController::class, 'update']);
+    Route::prefix('me')->group(function(){
+        Route::get('habits', [HabitController::class, 'getMyHabits']);
     });
-
-    Route::prefix('target_tags')->group(function () {
-        Route::get('/', [TargetTagController::class, 'index']);
-        Route::post('/', [TargetTagController::class, 'store']);
-    });
+    Route::apiResource('habits', HabitController::class);
 });

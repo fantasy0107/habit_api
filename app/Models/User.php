@@ -67,4 +67,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TargetTag::class, 'user_id', 'id');
     }
+
+    public function habits()
+    {
+        return $this->hasMany(Habit::class);
+    }
 }
