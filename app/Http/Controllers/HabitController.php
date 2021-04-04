@@ -15,7 +15,7 @@ class HabitController extends Controller
      */
     public function index()
     {
-        $habitPaginator = Habit::paginate();
+        $habitPaginator = Habit::latest()->paginate();
         $habitPaginator->getCollection()->transform(function ($value) {
             return new HabitResource($value);
         });
@@ -101,7 +101,7 @@ class HabitController extends Controller
 
     public function getMyHabits(Request $request)
     {
-        $habits = auth()->user()->habits()->paginate();
+        $habits = auth()->user()->habits()->latest()->paginate();
 
         $habits->getCollection()->transform(function ($value) {
             return new HabitResource($value);

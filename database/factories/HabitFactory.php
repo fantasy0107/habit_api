@@ -22,7 +22,9 @@ class HabitFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => 1,
+            'name' => $this->faker->word(),
+            'content' => $this->faker->paragraph(),
         ];
     }
 }
