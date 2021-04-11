@@ -38,7 +38,14 @@ class HabitController extends Controller
         $habit->content = $request->input('content', '預設內容');
         $habit->save();
 
-        return new HabitResource($habit);
+        return $this->created([
+            'data' => new HabitResource($habit),
+            'db' => [
+                'habit' => [
+                    $habit->id => new HabitResource($habit)
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -76,7 +83,14 @@ class HabitController extends Controller
 
         $habit->save();
 
-        return new HabitResource($habit);
+        return $this->ok([
+            'data' => new HabitResource($habit),
+            'db' => [
+                'habit' => [
+                    $habit->id => new HabitResource($habit)
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -101,12 +115,19 @@ class HabitController extends Controller
 
     public function getMyHabits(Request $request)
     {
-        $habits = auth()->user()->habits()->latest()->paginate();
+        $habits = auth()->user()->habits()->latest()->simplePaginate();
 
-        $habits->getCollection()->transform(function ($value) {
-            return new HabitResource($value);
-        });
 
-        return $habits;
+        $items =  $habits->getCollection();
+
+
+        return $this->ok([
+            'habit_ids' => $items->pluck('id'),
+            'current_page' => $habits->currentPage(),
+            'has_more_pages' => $habits->hasMorePages(),
+            'db' => [
+                'habit' => HabitResource::collection($items->keyBy('id'))
+            ]
+        ]);
     }
 }
