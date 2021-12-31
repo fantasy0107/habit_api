@@ -58,16 +58,6 @@ class User extends Authenticatable
         return $this->hasOne(UserToken::class, 'user_id', 'id');
     }
 
-    public function topics()
-    {
-        return $this->hasMany(Topic::class, 'user_id', 'id');
-    }
-
-    public function targetTags()
-    {
-        return $this->hasMany(TargetTag::class, 'user_id', 'id');
-    }
-
     public function habits()
     {
         return $this->hasMany(Habit::class);
