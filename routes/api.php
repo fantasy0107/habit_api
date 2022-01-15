@@ -40,7 +40,7 @@ Route::post('user_tokens',  [UserTokenController::class, 'store']);
 
 Route::middleware('check.token')->group(function () {
 
-    Route::prefix('me')->group(function(){
+    Route::prefix('me')->group(function () {
         Route::get('habits', [HabitController::class, 'getMyHabits']);
     });
     Route::apiResource('habits', HabitController::class);
