@@ -22,6 +22,6 @@ class UserObserver
         $userToken->value = Crypt::encryptString($user->id);
         $userToken->save();
 
-        Mail::to($user->email)->send(new \App\Mail\RegisterMail);
+        // Mail::to($user->email)->send(new \App\Mail\RegisterMail);
     }
 }

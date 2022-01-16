@@ -36,11 +36,11 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
-
-        $email = $request->emaill;
-
+        
+        $email = $request->email;
 
         $registeredUser = User::where('email', $email)->first();
+       
         if ($registeredUser) {
             abort(400, '已經註冊的使用者');
         }
