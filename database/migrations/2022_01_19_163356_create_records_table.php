@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTargetsTable extends Migration
+class CreateRecordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateTargetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('targets', function (Blueprint $table) {
+        Schema::create('records', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('name')->default('');
-            $table->string('picture')->default('');
-            $table->tinyInteger('step')->default(0);
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('habit_id')->constrained();
+            $table->tinyInteger('done')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateTargetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('targets');
+        Schema::dropIfExists('records');
     }
 }

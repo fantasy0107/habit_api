@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserTokenTable extends Migration
+class CreateHabitWeeklyDaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateUserTokenTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_token', function (Blueprint $table) {
+        Schema::create('habit_weekly_days', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('value');
+            $table->foreignId('habit_id');
+            $table->enum('day', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateUserTokenTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_token');
+        Schema::dropIfExists('habit_weekly_days');
     }
 }

@@ -15,9 +15,13 @@ class CreateHabitsTable extends Migration
     {
         Schema::create('habits', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('name', 100);
-            $table->text('content');
+            $table->foreignId('user_id')->constrained();
+            $table->string('title');
+            $table->text('description');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->integer('completion')->default(0)->comment('要幾次完成');
+            $table->string('repeat_type')->default('daily');
             $table->timestamps();
         });
     }
