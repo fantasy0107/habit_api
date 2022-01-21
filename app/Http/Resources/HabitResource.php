@@ -19,9 +19,14 @@ class HabitResource extends JsonResource
         return [
             "id" => $this->id,
             "user_id" =>  $this->user_id,
-            "name" =>  $this->name,
-            "content" =>  $this->content,
+            "title" =>  $this->title,
+            "description" =>  $this->description,
+            "start_date" =>  $this->start_date->toDateString(),
+            "end_date" =>  $this->end_date,
+            "completion" =>  $this->completion,
+            "repeat_type" =>  $this->repeat_type,
             "created_at" =>  $this->created_at,
+            "updated_at" =>  $this->updated_at,
         ];
     }
 }

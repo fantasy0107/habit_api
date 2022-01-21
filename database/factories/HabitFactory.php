@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Habit;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HabitFactory extends Factory
@@ -21,10 +22,15 @@ class HabitFactory extends Factory
      */
     public function definition()
     {
+        $user = User::take(10)->get()->shuffle()->first();
+
         return [
-            'user_id' => 1,
-            'name' => $this->faker->word(),
-            'content' => $this->faker->paragraph(),
+            'user_id' => $user->id,
+            'title' => $this->faker->word(),
+            'description' => $this->faker->paragraph(),
+            'start_date' => date('Y-m-d'),
+            'completion' => 0,
+            'repeat_type' => 'daily'
         ];
     }
 }

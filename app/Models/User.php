@@ -48,18 +48,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function targets()
-    {
-        return $this->hasMany(Target::class, 'user_id', 'id');
-    }
-
-    public function user_token()
-    {
-        return $this->hasOne(UserToken::class, 'user_id', 'id');
-    }
-
     public function habits()
     {
         return $this->hasMany(Habit::class);
+    }
+
+    public function getBearerTokenAttribute()
+    {
+        return 'Bearer ' . $this->api_token;
     }
 }

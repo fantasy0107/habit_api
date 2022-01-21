@@ -17,7 +17,7 @@ class CreateHabitsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->integer('completion')->default(0)->comment('要幾次完成');
