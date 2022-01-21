@@ -36,14 +36,12 @@ class CheckToken
         }
 
         $token = $parts[1];
-
-        $userToken = UserToken::where('value', $token)->first();
-
-        if (!$userToken) {
+       
+        $user = User::where('api_token', $token)->first();
+        
+        if (!$user->api_token) {
             abort(400, '錯誤 3');
         }
-
-        $user = User::find($userToken->user_id);
 
         Auth::login($user);
 

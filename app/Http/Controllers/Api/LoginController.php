@@ -5,28 +5,43 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\UserToken;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
 
     public function logIn(Request $request)
     {
+        $user = User::where('email', $request->email)->where('type', 'email')->first();
 
-        $user = User::where('email', $request->email)->where('type', 0)->first();
+        if (!$user) {
+            abort(400, '找不到使用者');
+        }
 
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
+        if (Hash::needsRehash($user->password)) {
+            $hashed = Hash::make($user->password);
+
+            if (Hash::check($request->password, $hashed)) {
+                $user->password = $hashed;
+                $user->save();
+
                 return $this->ok([
-                    'user' => $user->load('user_token')
+                    'user' => $user
                 ]);
+            } else {
+                abort(400, '密碼錯誤(1)!');
             }
         }
 
-        abort(400, '找不到使用者');
+        if (Hash::check($request->password, $user->password) == false) {
+            abort(400, '密碼錯誤!');
+        }
+
+        return $this->ok([
+            'user' => $user
+        ]);
     }
 
     public function register(Request $request)
@@ -36,11 +51,8 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
-        
-        $email = $request->email;
 
-        $registeredUser = User::where('email', $email)->first();
-       
+        $registeredUser = User::where('email', $request->email)->first();
         if ($registeredUser) {
             abort(400, '已經註冊的使用者');
         }
@@ -49,6 +61,7 @@ class LoginController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->api_token =  Str::random(80);
         $user->save();
 
         return $this->created([
@@ -68,7 +81,6 @@ class LoginController extends Controller
             abort(400, '發生錯誤');
         }
 
-
         $user = User::where('type', 1)->where('email', $facebookUser->email)->first();
         if (!$user) {
             $user = new User;
@@ -76,11 +88,12 @@ class LoginController extends Controller
             $user->email = $facebookUser->email;
             $user->type = 1;
             $user->password =  '';
+            $user->api_token =  Str::random(80);
             $user->save();
         }
 
         return $this->ok([
-            'user' => $user->load('user_token')
+            'user' => $user
         ]);
     }
 
@@ -103,11 +116,12 @@ class LoginController extends Controller
             $user->email = $facebookUser->email;
             $user->type = 2;
             $user->password =  '';
+            $user->api_token =  Str::random(80);
             $user->save();
         }
 
         return $this->ok([
-            'user' => $user->load('user_token')
+            'user' => $user
         ]);
     }
 }

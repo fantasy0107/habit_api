@@ -17,11 +17,6 @@ class UserObserver
      */
     public function created(User $user)
     {
-        $userToken  = new UserToken();
-        $userToken->user_id = $user->id;
-        $userToken->value = Crypt::encryptString($user->id);
-        $userToken->save();
-
         // Mail::to($user->email)->send(new \App\Mail\RegisterMail);
     }
 }

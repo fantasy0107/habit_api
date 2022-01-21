@@ -1,49 +1,33 @@
 <?php
 
-namespace Tests\Feature\Controllers\Api;
+namespace Tests\Feature\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Faker;
 
 class LoginControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
+    public function test_register_for_email()
     {
-        $response = $this->get('/');
+        $name =  'test123' . time();
+        $email = "test123" . time() . "@test.com";
 
-        $response->assertStatus(200);
-    }
+        $data = [
+            'name' =>  $name,
+            'email' => $email,
+            'password' => 'test123',
+            'password_confirmation' => 'test123'
+        ];
 
-    public function test_logIn()
-    {
-        $this->postJson('api/login', [
-            'email' => 'test@gamil.com            ',
-            'password' => 123123
-        ])->assertStatus(200)->assertJsonStructure([
-            'user' => [
-                'id',
-                'name',
-                'email'
-            ]
-        ]);
-    }
+        $response = $this->postJson('/api/register', $data);
 
-    public function test_register()
-    {
-        $faker = Faker\Factory::create();
-
-        $this->json('post', '/api/register', [
-            'name' =>  $faker->name(),
-            'email' => 'test+' . time() . '@gamil.com',
-            'password' => '123',
-            'password_confirmation' => '123'
-        ])->assertStatus(201);
+        $response->assertStatus(201)
+            ->assertJson([
+                'user' => [
+                    'name' => $name,
+                    'email' => $email,
+                ]
+            ]);
     }
 }
