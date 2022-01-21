@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHabitTagTable extends Migration
+class CreateTaggablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateHabitTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('habit_tag', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('habit_id')->constrained();
             $table->foreignId('tag_id')->constrained();
+            $table->unsignedBigInteger('taggable_id');
+            $table->string('taggable_type');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateHabitTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('habit_tag');
+        Schema::dropIfExists('taggables');
     }
 }
