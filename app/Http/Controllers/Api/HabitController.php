@@ -6,12 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\HabitResource;
 use App\Models\Habit;
 use App\Models\HabitWeeklyDay;
+use App\Models\Record;
+use App\Services\HabitService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
+/**
+ * 習慣相關
+ */
 class HabitController extends Controller
 {
+    protected $habitService;
+
+    public function __construct(HabitService $habitService)
+    {
+        $this->habitService = $habitService;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -19,15 +31,15 @@ class HabitController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        return response()->json([
+        return $this->ok([
             'habits' =>  HabitResource::collection($user->habits)
-        ], 200);
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新增習慣
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -44,39 +56,11 @@ class HabitController extends Controller
             'repeat_weekly_days' => ['required_if:repeat_type,weekly']
         ]);
 
-        $user = auth()->user();
+        $habit = $this->habitService->createHabit($request->all());
 
-        $habit = new Habit;
-        $habit->user_id = $user->id;
-        $habit->title = $request->title;
-        $habit->description =  $request->description;
-        $habit->start_date = $request->start_date;
-        $habit->end_date = $request->end_date;
-        $habit->completion = $request->completion;
-        $habit->repeat_type = $request->repeat_type;
-        $habit->save();
-
-        if ($request->repeat_type == 'weekly') {
-            $newRecords = [];
-
-            foreach ($request->repeat_weekly_days as $key => $day) {
-
-                if (in_array($day, ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])) {
-                    $newRecords[] = [
-                        'habit_id' => $habit->id,
-                        'day' => $day
-                    ];
-                }
-
-                if (count($newRecords)) {
-                    HabitWeeklyDay::insert($newRecords);
-                }
-            }
-        }
-
-        return response()->json([
+        return $this->created([
             'habit' => new HabitResource($habit)
-        ], 201);
+        ]);
     }
 
     /**
@@ -87,15 +71,15 @@ class HabitController extends Controller
      */
     public function show(Request $request, Habit $habit)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         if ($user->id != $habit->user_id) {
             abort(400, '你不是創建的人無法觀看');
         }
 
-        return response()->json([
+        return $this->ok([
             'habit' => new HabitResource($habit)
-        ], 200);
+        ]);
     }
 
     /**
@@ -141,9 +125,9 @@ class HabitController extends Controller
         }
 
 
-        return response()->json([
+        return $this->ok([
             'habit' => new HabitResource($habit)
-        ], 200);
+        ]);
     }
 
     /**
@@ -161,6 +145,28 @@ class HabitController extends Controller
 
         $habit->delete();
 
-        return response()->json([], 204);
+        return response()->json(null, 204);
+    }
+
+    public function updateHabitRecords(Request $request, Habit $habit)
+    {
+        $user = auth()->user();
+        if ($user->id != $habit->user_id) {
+            abort(400, '你不是創建的人無法刪除');
+        }
+
+        $record = Record::where('habit_id', $habit->id)->where('user_id', $user->id)->where('finish_date', $request->finish_date)->first();
+        if (!$record) {
+            $record = new Record;
+            $record->user_id = $user->id;
+            $record->habit_id = $habit->id;
+        }
+        $record->done = (int)$request->done;
+        $record->finish_date = $request->finish_date;
+        $record->save();
+
+        return $this->ok([
+            'record' => $record
+        ]);
     }
 }

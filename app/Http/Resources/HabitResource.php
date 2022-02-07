@@ -24,6 +24,8 @@ class HabitResource extends JsonResource
             "start_date" =>  $this->start_date->toDateString(),
             "end_date" =>  $this->end_date,
             "completion" =>  $this->completion,
+            "completion_count" =>  $this->completionCount,
+            "recordDates" => $this->when(count($this->records), $this->recordsDate),
             "repeat_type" =>  $this->repeat_type,
             "created_at" =>  $this->created_at,
             "updated_at" =>  $this->updated_at,

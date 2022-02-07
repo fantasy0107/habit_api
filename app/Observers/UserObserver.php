@@ -2,8 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\UserToken;
-use Illuminate\Support\Facades\Crypt;
+use App\Mail\Welcome;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 
@@ -17,6 +16,6 @@ class UserObserver
      */
     public function created(User $user)
     {
-        // Mail::to($user->email)->send(new \App\Mail\RegisterMail);
+        Mail::to($user->email)->send(new Welcome($user));
     }
 }
