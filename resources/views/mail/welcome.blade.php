@@ -8,6 +8,6 @@
     
     <p>歡迎</p>
 
-    <a href="{{ env('APP_URL') }}/daily?api_token={{ $token }}">Habit</a>
+    <a href="{{ env('MAIL_FOR_WELCOME') }}/daily?api_token={{ $token }}">Habit</a>
 </body>
 </html>
