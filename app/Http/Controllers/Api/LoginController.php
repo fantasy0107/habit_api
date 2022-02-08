@@ -104,11 +104,13 @@ class LoginController extends Controller
         $facebookUser = $this->userService->loginSocialiteAccount('facebook', $request->token);
         $user = User::where('type', 'facebook')->where('email', $facebookUser->email)->first();
 
-        return $user ? $this->returnSignUpAccountResponse($user) : $this->userService->signUp([
-            'name' => $facebookUser->name,
-            'email' => $facebookUser->email,
-            'type' => 'facebook'
-        ]);
+        return $user ? $this->returnSignUpAccountResponse($user) : [
+            'user' => $this->userService->signUp([
+                'name' => $facebookUser->name,
+                'email' => $facebookUser->email,
+                'type' => 'facebook'
+            ])
+        ];
     }
 
     /**
@@ -126,11 +128,13 @@ class LoginController extends Controller
         $googleUser = $this->userService->loginSocialiteAccount('google', $request->token);
         $user = User::where('type', 'google')->where('email', $googleUser->email)->first();
 
-        return $user ? $this->returnSignUpAccountResponse($user) : $this->userService->signUp([
-            'name' => $googleUser->name,
-            'email' => $googleUser->email,
-            'type' => 'google'
-        ]);
+        return $user ? $this->returnSignUpAccountResponse($user) : [
+            'user' => $this->userService->signUp([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'type' => 'google'
+            ])
+        ];
     }
 
     public function loginByToken(Request $request)
