@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -20,6 +21,7 @@ class UserService
             $user->api_token =  Str::random(80);
             $user->save();
         } catch (\Exception $e) {
+            Log::emergency($e->getMessage());
             abort(400, '建立帳號失敗');
         }
 

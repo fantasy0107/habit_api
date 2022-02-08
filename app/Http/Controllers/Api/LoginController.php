@@ -105,8 +105,8 @@ class LoginController extends Controller
         $user = User::where('type', 'facebook')->where('email', $facebookUser->email)->first();
 
         return $user ? $this->returnSignUpAccountResponse($user) : $this->userService->signUp([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $facebookUser->name,
+            'email' => $facebookUser->email,
             'type' => 'facebook'
         ]);
     }
@@ -127,8 +127,8 @@ class LoginController extends Controller
         $user = User::where('type', 'google')->where('email', $googleUser->email)->first();
 
         return $user ? $this->returnSignUpAccountResponse($user) : $this->userService->signUp([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
             'type' => 'google'
         ]);
     }

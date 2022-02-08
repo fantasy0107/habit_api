@@ -33,6 +33,4 @@ Route::post('register',  [LoginController::class, 'register']);
 Route::middleware('check.token')->group(function () {
     Route::put('habits/{habit}/records', [HabitController::class, 'updateHabitRecords']);
     Route::apiResource('habits', HabitController::class);
-    
-
 });
