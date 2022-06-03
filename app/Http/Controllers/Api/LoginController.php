@@ -65,21 +65,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('email', $request->email)->where('type', 'email')->first();
-        if (!$user) {
-            abort(400, '找不到使用者');
-        }
-
-        if (Hash::needsRehash($user->password)) {
-            $hashed = Hash::make($user->password);
-
-            if (Hash::check($request->password, $hashed)) {
-                $user->password = $hashed;
-                $user->save();
-            } else {
-                abort(400, '密碼錯誤(1)!');
-            }
-        }
+        $user = $this->userService->loginByEmailAndPassword($request);
 
         if (Hash::check($request->password, $user->password) == false) {
             abort(400, '密碼錯誤!');

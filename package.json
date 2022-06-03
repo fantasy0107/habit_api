@@ -10,9 +10,15 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "axios": "^0.21",
-        "laravel-mix": "^6.0.6",
+        "autoprefixer": "^10.4.7",
+        "axios": "^0.21.4",
+        "jquery": "^3.6.0",
+        "laravel-mix": "^6.0.44",
         "lodash": "^4.17.19",
-        "postcss": "^8.1.14"
+        "postcss": "^8.4.14",
+        "tailwindcss": "^3.0.24"
+    },
+    "dependencies": {
+        "@tailwindcss/forms": "^0.5.2"
     }
 }
