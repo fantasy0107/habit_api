@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HabitResource;
+use App\Http\Resources\PostLoginResource;
 use App\Http\Resources\TagResource;
 use App\Models\Habit;
 use App\Models\User;
@@ -71,7 +72,9 @@ class LoginController extends Controller
             abort(400, '密碼錯誤!');
         }
 
-        return $this->returnSignUpAccountResponse($user);
+        return new PostLoginResource([
+            'user' => $user
+        ]);
     }
 
 

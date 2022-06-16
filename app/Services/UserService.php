@@ -40,6 +40,12 @@ class UserService
         return $socialiteAccount;
     }
 
+    /**
+     * 用 email 和 password 登入
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function loginByEmailAndPassword($request)
     {
         $user = User::where('email', $request->email)->where('type', 'email')->first();
