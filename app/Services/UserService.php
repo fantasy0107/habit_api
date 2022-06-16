@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Constant\UserConstant;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -10,19 +12,28 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function signUp($inputs = [])
     {
+        $type = $inputs['type'] ?? UserConstant::USER_TYPE_EMAIL;
+        
         try {
             $user = new User;
-            $user->name = $inputs['name'];
+            $user->name = $inputs['name'] ?? '預設';
             $user->email = $inputs['email'];
-            $user->type = $inputs['type'];
-            $user->password = in_array($inputs['type'], ['facebook', 'google']) ? '' : Hash::make($inputs['password']);
+            $user->type = $type;
+            $user->password = in_array($type, ['facebook', 'google']) ? '' : Hash::make($inputs['password']);
             $user->api_token =  Str::random(80);
             $user->save();
         } catch (\Exception $e) {
             Log::emergency($e->getMessage());
-            abort(400, '建立帳號失敗');
+            abort(400, $e->getMessage());
         }
 
 
@@ -65,6 +76,11 @@ class UserService
         }
 
         return $user;
+    }
+
+    public function getByFilter($filter)
+    {
+        return $this->userRepository->getByFilter($filter);
     }
 
 }

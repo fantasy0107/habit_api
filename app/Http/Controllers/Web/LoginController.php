@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
 
 class LoginController extends Controller
 {
@@ -35,7 +38,7 @@ class LoginController extends Controller
         $user = $this->userService->loginByEmailAndPassword($request);
 
         session(['login_token' => $user->api_token]);
-       
+
         return view('sections.blog', $user->toArray());
     }
 
@@ -103,5 +106,37 @@ class LoginController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function register(Request $request)
+    {
+        return view('sections.register');
+    }
+
+    public function postRegister(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed'
+        ]);
+
+        $user = $this->userService->getByFilter([
+            'email' => $request->email
+        ])->first();
+
+        if ($user) {
+            return back()->withInput()->withErrors([
+                'message' => '使用者已存在'
+            ]);
+        }
+
+        $createUser = $this->userService->signUp([
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
+
+        Auth::login($createUser);
+
+        return view('sections.blog');
     }
 }

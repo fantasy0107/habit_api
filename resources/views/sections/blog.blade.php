@@ -9,6 +9,6 @@
 @endsection
  
 @section('content')
-    {{ $name }}
+    {{ auth()->user()->name }}
     <p>This is my body content.</p>
 @endsection
