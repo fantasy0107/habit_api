@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CreatePostResource;
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    protected $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +25,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        return CreatePostResource::collection($user->posts);
     }
 
     /**
@@ -22,9 +35,8 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
     }
 
     /**
@@ -35,7 +47,21 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+
+        $postData = $request->all();
+        $postData['user_id'] = $user->id;
+
+        $response = $this->postService->savePost([
+            'post' => $postData
+        ]);
+
+        return new CreatePostResource($response['post']);
     }
 
     /**

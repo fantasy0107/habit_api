@@ -18,11 +18,11 @@
     </div>
 @endif
 
-<div class="relative flex flex-col justify-center min-h-screen overflow-hidden">
+<div class="flex flex-1 justify-center min-h-screen ">
     <div class="w-full p-6 m-auto bg-white border-t border-purple-600 rounded shadow-lg shadow-purple-800/50 lg:max-w-md">
         <h1 class="text-3xl font-semibold text-center text-purple-700">LOGO</h1>
 
-        <form class="mt-6" method='POST' action="{{ route('login') }}" >
+        <form class="mt-6" method='POST' action="{{ route('login.create') }}" >
             @csrf
             <div>
                 <label for="email" class="block text-sm text-gray-800">Email</label>
@@ -40,7 +40,7 @@
                     </button>
                 </div>
         </form>
-        <p class="mt-8 text-xs font-light text-center text-gray-700"> Don't have an account? <a href="{{ route('login.page') }}" class="font-medium text-purple-600 hover:underline">Sign up</a></p>
+        <p class="mt-8 text-xs font-light text-center text-gray-700"> Don't have an account? <a href="{{ route('login.index') }}" class="font-medium text-purple-600 hover:underline">Sign up</a></p>
     </div>
 </div>
 

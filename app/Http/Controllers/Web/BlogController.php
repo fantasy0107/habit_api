@@ -4,20 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
-
-class LoginController extends Controller
+class BlogController extends Controller
 {
-    protected $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -25,21 +15,11 @@ class LoginController extends Controller
      */
     public function index()
     {
-        return view('sections.login');
-    }
+        $user = Auth::user();
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+        return view('sections.blog', [
+            'posts' => $user->posts
         ]);
-
-        $user = $this->userService->loginByEmailAndPassword($request);
-
-        Auth::login($user);
-
-        return redirect()->route('blogs.index');
     }
 
     /**
@@ -106,37 +86,5 @@ class LoginController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function register(Request $request)
-    {
-        return view('sections.register');
-    }
-
-    public function postRegister(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|confirmed'
-        ]);
-
-        $user = $this->userService->getByFilter([
-            'email' => $request->email
-        ])->first();
-
-        if ($user) {
-            return back()->withInput()->withErrors([
-                'message' => '使用者已存在'
-            ]);
-        }
-
-        $createUser = $this->userService->signUp([
-            'email' => $request->email,
-            'password' => $request->password
-        ]);
-
-        Auth::login($createUser);
-
-        return redirect()->route('blogs.index');
     }
 }

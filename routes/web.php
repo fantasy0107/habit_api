@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\BlogController;
 use App\Http\Controllers\Web\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LoginController::class, 'index'])->name('');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::get('/register', [LoginController::class, 'register'])->name('login.page');
-Route::post('/register', [LoginController::class, 'postRegister'])->name('register');
+
+Route::get('/', function () {
+    return redirect()->route('login.index');
+});
+
+Route::prefix('login')->name('login.')->group(function () {
+    Route::get('/', [LoginController::class, 'index'])->name('index');
+    Route::post('/', [LoginController::class, 'login'])->name('create');
+});
+
+Route::prefix('register')->name('register.')->group(function () {
+    Route::get('/', [LoginController::class, 'register'])->name('index');
+    Route::post('/', [LoginController::class, 'postRegister'])->name('create');
+});
+
+
+Route::middleware('check.auth')->group(function () {
+    Route::resource('blogs', BlogController::class);
+});
