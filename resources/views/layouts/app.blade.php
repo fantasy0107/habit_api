@@ -7,9 +7,8 @@
 </head>
 
 <body>
-    @include('sections.topbar');
-
-    <div class="flex flex-1 flex-col container mx-auto justify-center">
+    @include('sections.topbar')
+    <div class="flex flex-1 flex-col container mx-auto justify-center w-screen">
         @yield('content')
     </div>
 </body>

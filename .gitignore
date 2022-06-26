@@ -13,3 +13,5 @@ npm-debug.log
 yarn-error.log
 /report
 .package-lock.json
+app.js.LICENSE.txt
+yarn.lock

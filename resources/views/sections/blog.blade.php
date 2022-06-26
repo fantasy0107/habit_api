@@ -10,10 +10,6 @@
 
 @section('content')
 <div>
-    {{ auth()->user()->name }}
-    <p>This is my body content.</p>
-</div>
-<div>
     @include('sections.post')
 
     <div id='blog_list' class="flex flex-col">

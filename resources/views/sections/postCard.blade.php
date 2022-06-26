@@ -1,14 +1,46 @@
-<div id="{{ $id }}" class="max-w-sm rounded overflow-hidden shadow-lg">
-    <!-- <img class="w-full" src="/img/card-top.jpg" alt="Sunset in the mountains"> -->
-    <div class="px-6 py-4">
-        <div class="font-bold text-xl mb-2">{{ $title }}</div>
-        <p class="text-gray-700 text-base">
-            {{ $description }}
-        </p>
+<div id="{{ 'post_'.$id }}" class="max-w-sm rounded shadow-lg ">
+    <div class="flex flex-row px-6 py-4">
+        <div class="flex flex-col justify-between flex-1 font-bold text-xl mb-2">
+            <div>{{ $title }}</div>
+            <p class="text-gray-700 text-base">
+                {{ $description }}
+            </p>
+        </div>
+        <div class="flex flex-col">
+            <button id="post_card_button_{{ $id }}">...</button>
+            <form method="GET" action="/posts/{{ $id }}/edit">
+                @csrf
+                <button id="post_card_button_{{ $id }}_edit" class="hidden hover:bg-slate-400">edit</button>
+            </form>
+
+            <form id='post_delete_{{ $id }}' method='post' action="/posts/{{ $id }}">
+                @csrf
+                @method('DELETE')
+                <button id="post_card_button_{{ $id }}_delete" class="hidden hover:bg-slate-400" class="hidden">delete</button>
+            </form>
+        </div>
     </div>
-    <!-- <div class="px-6 pt-4 pb-2">
-        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
-    </div> -->
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        $("#post_card_button_{{ $id }}").on('click', function(e) {
+            const isHidde = $('#post_card_button_{{ $id }}_edit').hasClass('hidden');
+            if (isHidde) {
+                $('#post_card_button_{{ $id }}_edit').removeClass('hidden');
+                $('#post_card_button_{{ $id }}_delete').removeClass('hidden');
+            } else {
+                $('#post_card_button_{{ $id }}_edit').addClass('hidden');
+                $('#post_card_button_{{ $id }}_delete').addClass('hidden');
+            }
+        })
+
+        $("#post_card_button_{{ $id }}_delete").on('click', function(e) {
+            const isDelete = confirm("確定要刪除這則貼文嗎");
+            if (isDelete) {
+                $('#post_delete_{{ $id }}').submit();
+            }
+        })
+    })
+</script>
