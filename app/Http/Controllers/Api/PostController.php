@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constant\PostConstant;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CreatePostResource;
+use App\Http\Resources\DestroyPostResource;
+use App\Http\Resources\ShowPostResource;
+use App\Http\Resources\UpdatePostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -72,7 +77,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return new ShowPostResource($post);
     }
 
     /**
@@ -83,7 +88,6 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        
     }
 
     /**
@@ -95,7 +99,17 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $request->validate([
+            'status' => Rule::in([PostConstant::POST_STATUS_DEFAULT, PostConstant::POST_STATUS_DELETE, PostConstant::POST_STATUS_PUBLISH]),
+            'title' => 'string',
+            'description' => 'string',
+            'img' => 'url'
+        ]);
+
+        $post->fill($request->all());
+        $post->save();
+
+        return new UpdatePostResource($post);
     }
 
     /**
@@ -106,6 +120,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->status = PostConstant::POST_STATUS_DELETE;
+        $post->delete();
+
+        return new DestroyPostResource(null);
     }
 }
