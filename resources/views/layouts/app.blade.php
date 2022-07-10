@@ -1,16 +1,26 @@
 <html>
 
 <head>
-    <title>App Name - @yield('title')</title>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+    @include('sections.head')
 </head>
 
 <body>
-    @include('sections.topbar')
-    <div class="flex flex-1 flex-col container mx-auto justify-center w-screen">
-        @yield('content')
+<div class="h-screen w-screen">
+    <header>
+        @include('sections.topbar')
+    </header>
+    <div class="container mx-auto">
+        <div class="flex flex-1">
+            <div class="w-1/4">
+            </div>
+            <div class="flex flex-1 mx-auto justify-center">
+                @yield('content')
+            </div>
+            <div class="w-1/4">
+            </div>
+        </div>
     </div>
+</div>
 </body>
 
 </html>
