@@ -1,8 +1,6 @@
 <html>
 
-<head>
-    @include('sections.head')
-</head>
+@include('sections.head')
 
 <body>
 <div class="h-screen w-screen">
