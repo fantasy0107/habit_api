@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\BlogController;
 use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\PostController;
+use \App\Http\Controllers\Web\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,4 +36,5 @@ Route::prefix('register')->name('register.')->group(function () {
 Route::middleware('check.auth')->group(function () {
     Route::resource('blogs', BlogController::class);
     Route::resource('posts', PostController::class);
+    Route::resource('tasks', TaskController::class);
 });
