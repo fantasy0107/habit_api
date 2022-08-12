@@ -9,6 +9,7 @@ use App\Models\HabitWeeklyDay;
 use App\Models\Record;
 use App\Services\HabitService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 /**
@@ -17,6 +18,7 @@ use Illuminate\Validation\Rule;
 class HabitController extends Controller
 {
     protected $habitService;
+
 
     public function __construct(HabitService $habitService)
     {
@@ -27,22 +29,22 @@ class HabitController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         $user = auth()->user();
 
         return $this->ok([
-            'habits' =>  HabitResource::collection($user->habits)
+            'habits' => HabitResource::collection($user->habits)
         ]);
     }
 
     /**
      * 新增習慣
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -67,13 +69,13 @@ class HabitController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Request $request, Habit $habit)
     {
         $user = auth()->user();
 
-        if ($user->id != $habit->user_id) {
+        if ($user->id!=$habit->user_id) {
             abort(400, '你不是創建的人無法觀看');
         }
 
@@ -85,9 +87,9 @@ class HabitController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Habit $habit)
     {
@@ -102,26 +104,28 @@ class HabitController extends Controller
         ]);
 
         $user = auth()->user();
-        if ($user->id != $habit->user_id) {
+        if ($user->id!=$habit->user_id) {
             abort(400, '你不是創建的人無法更新');
         }
 
         $inputs = $request->all();
         $needUpdates = [];
         foreach ($inputs as $key => $value) {
-            if ($value && $value != $habit->{$key}) {
+            if ($value && $value!=$habit->{$key}) {
                 $needUpdates[$key] = $value;
             }
         }
 
         if (count($needUpdates)) {
-            $habit->update($request->only([
-                'title',
-                'description',
-                'start_date',
-                'end_date',
-                'completion'
-            ]));
+            $habit->update(
+                $request->only([
+                    'title',
+                    'description',
+                    'start_date',
+                    'end_date',
+                    'completion'
+                ])
+            );
         }
 
 
@@ -134,12 +138,12 @@ class HabitController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Habit $habit)
     {
         $user = auth()->user();
-        if ($user->id != $habit->user_id) {
+        if ($user->id!=$habit->user_id) {
             abort(400, '你不是創建的人無法刪除');
         }
 
@@ -151,11 +155,14 @@ class HabitController extends Controller
     public function updateHabitRecords(Request $request, Habit $habit)
     {
         $user = auth()->user();
-        if ($user->id != $habit->user_id) {
+        if ($user->id!=$habit->user_id) {
             abort(400, '你不是創建的人無法刪除');
         }
 
-        $record = Record::where('habit_id', $habit->id)->where('user_id', $user->id)->where('finish_date', $request->finish_date)->first();
+        $record = Record::where('habit_id', $habit->id)->where('user_id', $user->id)->where(
+            'finish_date',
+            $request->finish_date
+        )->first();
         if (!$record) {
             $record = new Record;
             $record->user_id = $user->id;

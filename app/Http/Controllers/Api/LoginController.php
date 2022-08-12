@@ -22,7 +22,7 @@ class LoginController extends Controller
     {
         $this->userService = $userService;
     }
-
+    
     /**
      * 用 email 和 password 註冊帳號
      *
