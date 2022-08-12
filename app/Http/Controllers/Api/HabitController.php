@@ -9,7 +9,6 @@ use App\Models\HabitWeeklyDay;
 use App\Models\Record;
 use App\Services\HabitService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 /**
@@ -18,7 +17,6 @@ use Illuminate\Validation\Rule;
 class HabitController extends Controller
 {
     protected $habitService;
-
 
     public function __construct(HabitService $habitService)
     {
@@ -29,7 +27,7 @@ class HabitController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -43,8 +41,8 @@ class HabitController extends Controller
     /**
      * 新增習慣
      *
-     * @param  Request  $request
-     * @return Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -68,8 +66,8 @@ class HabitController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param int $id
+     * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Habit $habit)
     {
@@ -87,9 +85,9 @@ class HabitController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Habit $habit)
     {
@@ -137,8 +135,8 @@ class HabitController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param int $id
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Habit $habit)
     {

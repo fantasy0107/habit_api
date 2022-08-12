@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +35,8 @@ Route::post('register',  [LoginController::class, 'register']);
 Route::middleware('check.token')->group(function () {
     Route::put('habits/{habit}/records', [HabitController::class, 'updateHabitRecords']);
     Route::apiResource('habits', HabitController::class);
+    Route::apiResource('posts', PostController::class);
+    Route::apiResource('tasks', TaskController::class);
 });
+
+

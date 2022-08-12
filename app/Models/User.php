@@ -58,6 +58,21 @@ class User extends Authenticatable
         return $this->hasMany(Tag::class);
     }
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
     public function getBearerTokenAttribute()
     {
         return 'Bearer ' . $this->api_token;
