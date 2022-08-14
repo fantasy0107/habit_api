@@ -33,4 +33,9 @@ class ProjectRepository
 
         return $post;
     }
+
+    public function getById($projectId)
+    {
+        return Project::find($projectId);
+    }
 }

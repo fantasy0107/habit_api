@@ -34,6 +34,7 @@ Route::prefix('register')->name('register.')->group(function () {
 
 
 Route::middleware('check.auth')->group(function () {
+    Route::get('projects/{project}/tasks', [TaskController::class, 'getProjectTasks']);
     Route::resource('blogs', BlogController::class);
     Route::resource('posts', PostController::class);
     Route::resource('tasks', TaskController::class);

@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Constant\ProjectConstant;
 use App\Http\Controllers\Controller;
+use App\Models\Project;
+use App\Models\Task;
+use App\Services\TaskService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    private $taskService;
+
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -19,6 +29,39 @@ class TaskController extends Controller
         return view('sections.task.main', [
             'projects' => $user->projects,
             'tasks'    => $user->tasks,
+        ]);
+    }
+
+    public function getProjectTasks(Request $request, $project)
+    {
+        $user = auth()->user();
+
+
+        $tasks = [];
+        switch ($request->type) {
+            case ProjectConstant::PROJECT_TYPE_DEFAULT:
+                $project = $user->projects()->where('id', $project)->first();
+                if ($project) {
+                    $tasks = $project->tasks;
+                }
+                break;
+            case ProjectConstant::PROJECT_TYPE_BOX:
+                $project = $user->projects()->where('type', ProjectConstant::PROJECT_TYPE_BOX)->first();
+                if ($project) {
+                    $tasks = $this->taskService->getProjectTasks($project->id);
+                }
+                break;
+            case ProjectConstant::PROJECT_TYPE_TODAY:
+                $toDayStart = Carbon::today()->startOfDay();
+                $toDayEnd   = Carbon::today()->endOfDay();
+
+                $tasks = $user->tasks()->whereBetween('created_at', [$toDayStart, $toDayEnd])->get();
+                break;
+        }
+
+
+        return view('sections.task.content', [
+            'tasks' => $tasks
         ]);
     }
 
@@ -90,6 +133,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->taskService->deleteById($id);
+
+        return $this->ok();
     }
 }
