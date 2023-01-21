@@ -23,14 +23,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('login')->group(function () {
-    Route::post('/',  [LoginController::class, 'logIn']);
-    Route::post('facebook',  [LoginController::class, 'loginByFacebook']);
-    Route::post('google',  [LoginController::class, 'loginByGoogle']);
-    Route::post('token',  [LoginController::class, 'loginByToken']);
-
+    Route::post('/', [LoginController::class, 'logIn']);
+    Route::post('facebook', [LoginController::class, 'loginByFacebook']);
+    Route::post('google', [LoginController::class, 'loginByGoogle']);
+    Route::post('token', [LoginController::class, 'loginByToken']);
 });
 
-Route::post('register',  [LoginController::class, 'register']);
+Route::post('register', [LoginController::class, 'register']);
 
 Route::middleware('check.token')->group(function () {
     Route::put('habits/{habit}/records', [HabitController::class, 'updateHabitRecords']);
